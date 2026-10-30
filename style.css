@@ -1,209 +1,145 @@
+/* Configurações gerais e cores do tema */
+:root {
+  --rosa-claro: #fbebee;
+  --rosa-card: #ffffff;
+  --cinza-texto: #4a4a4a;
+  --cinza-suave: #8c8c8c;
+  --cinza-borda: #e8e1e3;
+  --destaque-rosa: #e093a2;
+  --fundo-pagina: #fbf7f8;
+  --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #f4f7f6;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+  background-color: var(--fundo-pagina);
+  color: var(--cinza-texto);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
 }
 
+/* Container central */
 .container {
-    width: 100%;
-    max-width: 1000px;
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 1100px;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
+/* Cabeçalho */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
 }
 
-header h1 {
-    color: #2c3e50;
-    font-size: 24px;
+.header h1 {
+  color: var(--destaque-rosa);
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
-.info-aluno span {
-    margin-left: 15px;
-    background: #eef2f5;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #4a5568;
+.header .subtitle {
+  color: var(--cinza-suave);
+  font-size: 1rem;
 }
 
-/* TELA DE LOGIN */
-.card-login {
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 25px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+/* Grid dos Cards de Resumo */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
-.card-login h2 {
-    margin-bottom: 20px;
-    color: #2d3748;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-}
-
-.form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #4a5568;
-}
-
-.form-group input {
-    padding: 10px;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
-    font-size: 16px;
-}
-
-button {
-    background-color: #3182ce;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background-color: #2b6cb0;
-}
-
-.acoes-boletim {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* CARDS */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
+/* Estilo do Card individual */
 .card {
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
+  background-color: var(--rosa-card);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 16px; /* Cantos arredondados */
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--sombra-suave); /* Sombra leve e delicada */
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
 }
 
 .card h3 {
-    font-size: 14px;
-    color: #718096;
-    margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: var(--cinza-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
 }
 
-.card p {
-    font-size: 22px;
-    font-weight: bold;
-    color: #2d3748;
+.card .card-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--cinza-texto);
 }
 
-/* TABELA */
-.tabela-container {
-    overflow-x: auto;
+.card .card-status {
+  font-size: 0.75rem;
+  color: var(--destaque-rosa);
+  display: block;
+  margin-top: 5px;
+}
+
+/* Tabela Responsiva */
+.table-container {
+  background-color: var(--rosa-card);
+  border-radius: 16px;
+  border: 1px solid var(--cinza-borda);
+  box-shadow: var(--sombra-suave);
+  overflow-x: auto; /* Permite rolar pro lado no celular se não couber */
+  padding: 10px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  min-width: 650px;
 }
 
 th, td {
-    padding: 12px 10px;
-    text-align: center;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 14px;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: 0.95rem;
 }
 
 th {
-    background-color: #edf2f7;
-    color: #2d3748;
-    font-weight: 600;
+  background-color: var(--rosa-claro);
+  color: var(--cinza-texto);
+  font-weight: 600;
 }
 
+/* Destaque para linhas alternadas */
 tbody tr:hover {
-    background-color: #f7fafc;
+  background-color: #fdf8f9;
 }
 
-.situacao-aprovado {
-    color: #38a169;
-    font-weight: bold;
+/* Estilos de Situação */
+.situacao-bom {
+  color: #4a8a5b;
+  font-weight: 600;
 }
 
-.situacao-recuperacao {
-    color: #dd6b20;
-    font-weight: bold;
+.situacao-atencao {
+  color: #c96a6a;
+  font-weight: 600;
 }
 
-.situacao-reprovado {
-    color: #e53e3e;
-    font-weight: bold;
+.situacao-indisponivel {
+  color: var(--cinza-suave);
+  font-style: italic;
 }
-
-/* MODAL DE EDIÇÃO */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.modal-conteudo {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    max-width: 700px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-}
-
-.modal-conteudo h2 {
-    margin-bottom: 20px;
-    color: #2d3748;
-}
-
-.item-edicao {
-    border-bottom: 1px solid #e2e8f0;
-    padding-
