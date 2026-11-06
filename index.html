@@ -14,61 +14,108 @@
     <!-- Cabeçalho do Boletim -->
     <header class="header">
       <h1>Boletim Digital</h1>
-      <p class="subtitle">9º Ano &bull; Estudante Exemplo</p>
+      <p class="subtitle">9º Ano &bull; Turma 9B &bull; Chamada nº 20</p>
     </header>
 
-    <!-- Área de Cards de Resumo -->
-    <section class="cards-grid">
-      <div class="card">
-        <h3>Média Geral</h3>
-        <p class="card-value" id="card-media-geral">—</p>
+    <!-- Tela de Acesso / Login por PIN -->
+    <section id="area-login" class="login-card">
+      <h2>Acesso ao Boletim</h2>
+      <p class="login-info">Estudante: <strong>Turma 9B</strong> | <strong>Chamada 20</strong></p>
+      
+      <div class="login-form">
+        <label for="campo-pin">Digite seu PIN:</label>
+        <input type="password" id="campo-pin" placeholder="****" maxlength="20">
+        <button id="btn-entrar" type="button">Entrar</button>
       </div>
-
-      <div class="card">
-        <h3>Total de Faltas</h3>
-        <p class="card-value" id="card-total-faltas">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Bom Desempenho</h3>
-        <p class="card-value" id="card-bom-desempenho">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Precisam de Atenção</h3>
-        <p class="card-value" id="card-atencao">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Frequência Geral</h3>
-        <p class="card-value" id="card-frequencia">92%</p>
-        <span class="card-status">Frequência adequada</span>
-      </div>
+      
+      <p id="mensagem-login" class="mensagem-status"></p>
     </section>
 
-    <!-- Tabela Responsiva de Disciplinas -->
-    <section class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Disciplina</th>
-            <th>1º Tri</th>
-            <th>2º Tri</th>
-            <th>3º Tri</th>
-            <th>Média</th>
-            <th>Faltas</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-boletim">
-          <!-- As linhas com as matérias serão geradas automaticamente pelo JavaScript -->
-        </tbody>
-      </table>
-    </section>
+    <!-- Conteúdo do Boletim (inicialmente oculto) -->
+    <div id="conteudo-boletim" style="display: none;">
+      
+      <!-- Painel de Ações -->
+      <div class="acoes-bar">
+        <button id="btn-alterar-dados" type="button">Alterar dados</button>
+      </div>
 
-  </div>
+      <!-- Área de Cards de Resumo -->
+      <section class="cards-grid">
+        <div class="card">
+          <h3>Média Geral</h3>
+          <p class="card-value" id="card-media-geral">—</p>
+        </div>
 
-  <!-- Vinculando nosso script JavaScript -->
-  <script src="script.js"></script>
-</body>
-</html>
+        <div class="card">
+          <h3>Total de Faltas</h3>
+          <p class="card-value" id="card-total-faltas">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Bom Desempenho</h3>
+          <p class="card-value" id="card-bom-desempenho">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Precisam de Atenção</h3>
+          <p class="card-value" id="card-atencao">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Frequência Geral</h3>
+          <p class="card-value" id="card-frequencia">92%</p>
+          <span class="card-status">Frequência adequada</span>
+        </div>
+      </section>
+
+      <!-- Tabela Responsiva de Disciplinas -->
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>1º Tri</th>
+              <th>2º Tri</th>
+              <th>3º Tri</th>
+              <th>Média</th>
+              <th>Faltas</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-boletim">
+            <!-- As linhas com as matérias serão geradas automaticamente pelo JavaScript -->
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+    <!-- Modal/Área de Edição -->
+    <div id="modal-edicao" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <h2>Alterar Notas e Faltas</h2>
+        <p class="modal-instrucoes">Digite notas de 0 a 10 (use vírgula ou ponto, ou deixe em branco). Faltas devem ser números inteiros (0 ou maior).</p>
+        
+        <p id="mensagem-edicao" class="mensagem-status"></p>
+        
+        <div class="table-container modal-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Disciplina</th>
+                <th>N1 (1º Tri)</th>
+                <th>F1 (Faltas)</th>
+                <th>N2 (2º Tri)</th>
+                <th>F2 (Faltas)</th>
+                <th>N3 (3º Tri)</th>
+                <th>F3 (Faltas)</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-edicao">
+              <!-- Linhas de edição inseridas dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal-botoes">
+          <button id="btn-salvar-dados" type="
