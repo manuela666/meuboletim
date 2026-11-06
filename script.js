@@ -1,5 +1,15 @@
+// CONFIGURAÇÃO FIXA DO ALUNO
+const CONFIG_ALUNO = {
+  turma: "9B",
+  numeroChamada: 20,
+  apiUrl: "https://boletim-api.profbt.com.br"
+};
+
+let pinSessao = "";
+let dadosBoletim = null;
+
 // DADOS FICTÍCIOS PADRONIZADOS DA TURMA (9º ANO)
-const dadosMaterias = [
+const DADOS_LOCAIS_PADRAO = [
   { disciplina: "Língua Portuguesa", tri1: 78, tri2: "8,2", tri3: 8.6, faltas: [2, 2, 1] },
   { disciplina: "Matemática", tri1: 55, tri2: "5,4", tri3: null, faltas: [3, 2, 2] },
   { disciplina: "Ciências", tri1: 84, tri2: 7.9, tri3: "8,3", faltas: [1, 1, 1] },
@@ -17,34 +27,43 @@ const dadosMaterias = [
   { disciplina: "Práticas Experimentais", tri1: 64, tri2: "6,6", tri3: 7.0, faltas: [1, 1, 1] }
 ];
 
-// NOTA: A frequência geral de 92% é apenas um dado fictício/demonstrativo nesta etapa.
-// Ela será calculada de forma dinâmica em versões futuras do projeto.
+document.addEventListener("DOMContentLoaded", () => {
+  const btnEntrar = document.getElementById("btn-entrar");
+  const pinInput = document.getElementById("pin-input");
+  const btnEditar = document.getElementById("btn-editar");
+  const btnSalvar = document.getElementById("btn-salvar");
+  const btnCancelar = document.getElementById("btn-cancelar");
+
+  btnEntrar.addEventListener("click", realizarLogin);
+  pinInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") realizarLogin();
+  });
+
+  btnEditar.addEventListener("click", abrirModalEdicao);
+  btnCancelar.addEventListener("click", fecharModalEdicao);
+  btnSalvar.addEventListener("click", salvarAlteracoes);
+});
 
 // Função para normalizar qualquer valor de nota para a escala de 0 a 10
 function normalizarNota(valor) {
-  // Trata notas não lançadas ou vazias
   if (valor === null || valor === undefined || valor === "") {
     return null;
   }
 
-  // Converte texto com vírgula para número com ponto
   if (typeof valor === "string") {
     valor = valor.replace(",", ".");
   }
 
   let num = Number(valor);
 
-  // Se o valor não for um número válido, descarta
   if (isNaN(num)) {
     return null;
   }
 
-  // Ajusta valores acima de 10 (ex: 82 vira 8.2)
   if (num > 10 && num <= 100) {
     num = num / 10;
   }
 
-  // Garante que o número está dentro da faixa de 0 a 10
   if (num >= 0 && num <= 10) {
     return num;
   }
@@ -60,6 +79,63 @@ function formatarNotaExibicao(nota) {
   return nota.toFixed(1).replace(".", ",");
 }
 
+async function realizarLogin() {
+  const pinInput = document.getElementById("pin-input");
+  const msg = document.getElementById("mensagem-login");
+  const pinDigitado = pinInput.value.trim();
+
+  if (!pinDigitado) {
+    exibirMensagem(msg, "Por favor, digite o PIN.", true);
+    return;
+  }
+
+  exibirMensagem(msg, "Conectando...", false);
+
+  try {
+    const resposta = await fetch(`${CONFIG_ALUNO.apiUrl}/api/v1/boletins/abrir`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        turma: CONFIG_ALUNO.turma,
+        numero_chamada: CONFIG_ALUNO.numeroChamada,
+        pin: pinDigitado
+      })
+    });
+
+    if (resposta.status === 401) {
+      exibirMensagem(msg, "Turma, chamada ou PIN inválidos.", true);
+      return;
+    }
+
+    if (resposta.status === 429) {
+      exibirMensagem(msg, "Muitas tentativas. Aguarde um minuto e tente novamente.", true);
+      return;
+    }
+
+    if (!resposta.ok) {
+      exibirMensagem(msg, "Não foi possível conectar ao servidor. Tente novamente.", true);
+      return;
+    }
+
+    const resultado = await resposta.json();
+    pinSessao = pinDigitado;
+    pinInput.value = "";
+
+    if (resultado.dados && resultado.dados.disciplinas && resultado.dados.disciplinas.length > 0) {
+      dadosBoletim = resultado.dados.disciplinas;
+    } else {
+      dadosBoletim = JSON.parse(JSON.stringify(DADOS_LOCAIS_PADRAO));
+    }
+
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("boletim-section").style.display = "block";
+    carregarBoletim();
+
+  } catch (erro) {
+    exibirMensagem(msg, "Não foi possível conectar ao servidor. Tente novamente.", true);
+  }
+}
+
 // Função principal que processa os dados e desenha a página
 function carregarBoletim() {
   const tabela = document.getElementById("tabela-boletim");
@@ -71,14 +147,15 @@ function carregarBoletim() {
   let qtdBomDesempenho = 0;
   let qtdAtencao = 0;
 
-  // Passa por cada matéria do nosso array
-  dadosMaterias.forEach((materia) => {
-    // Normaliza as notas dos 3 trimestres
-    const n1 = normalizarNota(materia.tri1);
-    const n2 = normalizarNota(materia.tri2);
-    const n3 = normalizarNota(materia.tri3);
+  dadosBoletim.forEach((materia) => {
+    let n1 = normalizarNota(materia.tri1 !== undefined ? materia.tri1 : materia.n1);
+    let n2 = normalizarNota(materia.tri2 !== undefined ? materia.tri2 : materia.n2);
+    let n3 = normalizarNota(materia.tri3 !== undefined ? materia.tri3 : materia.n3);
 
-    // Calcula a média ignorando notas ausentes (sem transformar ausente em 0)
+    let f1 = materia.faltas ? (materia.faltas[0] || 0) : (parseInt(materia.f1) || 0);
+    let f2 = materia.faltas ? (materia.faltas[1] || 0) : (parseInt(materia.f2) || 0);
+    let f3 = materia.faltas ? (materia.faltas[2] || 0) : (parseInt(materia.f3) || 0);
+
     const notasDisponiveis = [n1, n2, n3].filter((n) => n !== null);
     let media = null;
 
@@ -89,11 +166,9 @@ function carregarBoletim() {
       totalMateriasComMedia++;
     }
 
-    // Soma as faltas dos trimestres
-    const totalFaltasMateria = materia.faltas.reduce((acc, curr) => acc + curr, 0);
+    const totalFaltasMateria = f1 + f2 + f3;
     totalFaltasGeral += totalFaltasMateria;
 
-    // Define a situação da matéria
     let situacaoTexto = "Nota ainda não disponível";
     let situacaoClasse = "situacao-indisponivel";
 
@@ -109,22 +184,44 @@ function carregarBoletim() {
       }
     }
 
-    // Cria a linha da tabela dinamicamente usando o DOM
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><strong>${materia.disciplina}</strong></td>
-      <td>${formatarNotaExibicao(n1)}</td>
-      <td>${formatarNotaExibicao(n2)}</td>
-      <td>${formatarNotaExibicao(n3)}</td>
-      <td><strong>${formatarNotaExibicao(media)}</strong></td>
-      <td>${totalFaltasMateria}</td>
-      <td class="${situacaoClasse}">${situacaoTexto}</td>
-    `;
+
+    const tdDisc = document.createElement("td");
+    const strongDisc = document.createElement("strong");
+    strongDisc.textContent = materia.disciplina;
+    tdDisc.appendChild(strongDisc);
+    tr.appendChild(tdDisc);
+
+    const td1 = document.createElement("td");
+    td1.textContent = formatarNotaExibicao(n1);
+    tr.appendChild(td1);
+
+    const td2 = document.createElement("td");
+    td2.textContent = formatarNotaExibicao(n2);
+    tr.appendChild(td2);
+
+    const td3 = document.createElement("td");
+    td3.textContent = formatarNotaExibicao(n3);
+    tr.appendChild(td3);
+
+    const tdMedia = document.createElement("td");
+    const strongMedia = document.createElement("strong");
+    strongMedia.textContent = formatarNotaExibicao(media);
+    tdMedia.appendChild(strongMedia);
+    tr.appendChild(tdMedia);
+
+    const tdFaltas = document.createElement("td");
+    tdFaltas.textContent = totalFaltasMateria;
+    tr.appendChild(tdFaltas);
+
+    const tdSit = document.createElement("td");
+    tdSit.textContent = situacaoTexto;
+    if (situacaoClasse) tdSit.classList.add(situacaoClasse);
+    tr.appendChild(tdSit);
 
     tabela.appendChild(tr);
   });
 
-  // Atualiza os cards de resumo na área superior
   const mediaGeralFinal = totalMateriasComMedia > 0 ? (somaMediasGerais / totalMateriasComMedia) : null;
   
   document.getElementById("card-media-geral").innerText = formatarNotaExibicao(mediaGeralFinal);
@@ -133,5 +230,7 @@ function carregarBoletim() {
   document.getElementById("card-atencao").innerText = qtdAtencao;
 }
 
-// Executa o carregamento assim que a página abre
-carregarBoletim();
+function abrirModalEdicao() {
+  const container = document.getElementById("form-edicao-container");
+  container.innerHTML = "";
+  document.getElementById("mensagem-edicao").
