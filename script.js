@@ -17,45 +17,39 @@ const dadosMaterias = [
   { disciplina: "Práticas Experimentais", tri1: 64, tri2: "6,6", tri3: 7.0, faltas: [1, 1, 1] }
 ];
 
-// Função para gerar BEM MAIS brilhos no fundo em rosa claro e branco
+// Função para gerar estrelas finas de 4 pontas no fundo
 function criarEstrelasFundo() {
   const container = document.createElement("div");
   container.id = "stars-container";
   document.body.appendChild(container);
 
-  const quantidadeEstrelas = 80; // Muito mais pontinhos piscando!
+  const quantidadeEstrelas = 90; // Bastante estrelinhas de 4 pontas no fundo
 
   for (let i = 0; i < quantidadeEstrelas; i++) {
     const star = document.createElement("div");
-    star.classList.add("star");
+    star.classList.add("star-4-points");
 
-    // Define aleatoriamente a cor: rosa claro ou branca
+    // Sorteia a cor: rosa clarinho ou branca
     if (Math.random() > 0.5) {
       star.classList.add("cor-rosa");
     } else {
       star.classList.add("cor-branca");
     }
 
-    // Define aleatoriamente o formato (ponto simples ou cruzinha brilho)
-    if (Math.random() > 0.65) {
-      star.classList.add("sparkle");
-    }
-
-    // Posições aleatórias na tela
+    // Posição aleatória na tela
     const x = Math.random() * 100;
     const y = Math.random() * 100;
 
-    // Tamanhos variados (entre 2px e 9px)
-    const tamanho = Math.random() * 7 + 2;
+    // Tamanho variado (entre 8px e 20px de ponta a ponta)
+    const tamanho = Math.random() * 12 + 8;
 
-    // Tempos de animação para efeito constante
+    // Tempo de brilho piscando
     const duracao = Math.random() * 3 + 1.5;
     const atraso = Math.random() * 5;
 
     star.style.left = `${x}vw`;
     star.style.top = `${y}vh`;
-    star.style.width = `${tamanho}px`;
-    star.style.height = `${tamanho}px`;
+    star.style.setProperty("--size", `${tamanho}px`);
     star.style.setProperty("--duration", `${duracao}s`);
     star.style.setProperty("--delay", `${atraso}s`);
 
