@@ -253,4 +253,192 @@ async function efetuarLogin() {
     carregarBoletim(dadosAtuaisBoletim);
 
   } catch (erro) {
-    msgLogin.className = "
+    msgLogin.className = "mensagem-status erro";
+    msgLogin.textContent = "Não foi possível conectar ao servidor. Tente novamente.";
+  }
+}
+
+// MONTAGEM DA TABELA DE EDIÇÃO
+function abrirModalEdicao() {
+  const tabelaEdicao = document.getElementById("tabela-edicao");
+  tabelaEdicao.innerHTML = "";
+  document.getElementById("mensagem-edicao").textContent = "";
+
+  dadosAtuaisBoletim.forEach((materia, idx) => {
+    const tr = document.createElement("tr");
+
+    const tdNome = document.createElement("td");
+    const strongNome = document.createElement("strong");
+    strongNome.textContent = materia.disciplina;
+    tdNome.appendChild(strongNome);
+
+    const f = Array.isArray(materia.faltas) ? materia.faltas : [0, 0, 0];
+
+    const valN1 = materia.tri1 !== null && materia.tri1 !== undefined ? materia.tri1 : "";
+    const valN2 = materia.tri2 !== null && materia.tri2 !== undefined ? materia.tri2 : "";
+    const valN3 = materia.tri3 !== null && materia.tri3 !== undefined ? materia.tri3 : "";
+
+    tr.innerHTML = `
+      <td><strong>${materia.disciplina}</strong></td>
+      <td><input type="text" class="input-nota" data-idx="${idx}" data-campo="tri1" value="${valN1}"></td>
+      <td><input type="text" class="input-falta" data-idx="${idx}" data-campo="f1" value="${f[0] !== undefined ? f[0] : 0}"></td>
+      <td><input type="text" class="input-nota" data-idx="${idx}" data-campo="tri2" value="${valN2}"></td>
+      <td><input type="text" class="input-falta" data-idx="${idx}" data-campo="f2" value="${f[1] !== undefined ? f[1] : 0}"></td>
+      <td><input type="text" class="input-nota" data-idx="${idx}" data-campo="tri3" value="${valN3}"></td>
+      <td><input type="text" class="input-falta" data-idx="${idx}" data-campo="f3" value="${f[2] !== undefined ? f[2] : 0}"></td>
+    `;
+    
+    tabelaEdicao.appendChild(tr);
+  });
+
+  document.getElementById("modal-edicao").style.display = "flex";
+}
+
+function fecharModalEdicao() {
+  document.getElementById("modal-edicao").style.display = "none";
+}
+
+// VALIDAÇÃO DAS NOTAS DIGITADAS NO EDITOR
+function validarEProcessarNota(valStr) {
+  if (valStr === null || valStr === undefined) return { valido: true, valor: null };
+  const strLimpa = String(valStr).trim();
+  if (strLimpa === "") return { valido: true, valor: null };
+
+  const strNormalizada = strLimpa.replace(",", ".");
+  if (!/^\d+(\.\d+)?$/.test(strNormalizada)) {
+    return { valido: false, valor: null };
+  }
+
+  const num = Number(strNormalizada);
+  if (isNaN(num) || num < 0 || num > 10) {
+    return { valido: false, valor: null };
+  }
+
+  return { valido: true, valor: num };
+}
+
+// VALIDAÇÃO DAS FALTAS DIGITADAS NO EDITOR
+function validarEProcessarFalta(valStr) {
+  if (valStr === null || valStr === undefined) return { valido: false, valor: null };
+  const strLimpa = String(valStr).trim();
+  if (strLimpa === "") return { valido: false, valor: null };
+
+  if (!/^\d+$/.test(strLimpa)) {
+    return { valido: false, valor: null };
+  }
+
+  const num = Number(strLimpa);
+  if (isNaN(num) || num < 0) {
+    return { valido: false, valor: null };
+  }
+
+  return { valido: true, valor: num };
+}
+
+// SALVAR ALTERAÇÕES NA API
+async function salvarAlteracoes() {
+  const msgEdicao = document.getElementById("mensagem-edicao");
+  msgEdicao.className = "mensagem-status";
+  msgEdicao.textContent = "";
+
+  const inputsNotas = document.querySelectorAll(".input-nota");
+  const inputsFaltas = document.querySelectorAll(".input-falta");
+
+  inputsNotas.forEach(i => i.classList.remove("invalido"));
+  inputsFaltas.forEach(i => i.classList.remove("invalido"));
+
+  let temErro = false;
+  const copiaNovosDados = JSON.parse(JSON.stringify(dadosAtuaisBoletim));
+
+  inputsNotas.forEach(input => {
+    const idx = Number(input.getAttribute("data-idx"));
+    const campo = input.getAttribute("data-campo");
+    const checagem = validarEProcessarNota(input.value);
+
+    if (!checagem.valido) {
+      input.classList.add("invalido");
+      temErro = true;
+    } else {
+      copiaNovosDados[idx][campo] = checagem.valor;
+    }
+  });
+
+  inputsFaltas.forEach(input => {
+    const idx = Number(input.getAttribute("data-idx"));
+    const campo = input.getAttribute("data-campo");
+    const checagem = validarEProcessarFalta(input.value);
+
+    if (!checagem.valido) {
+      input.classList.add("invalido");
+      temErro = true;
+    } else {
+      if (!Array.isArray(copiaNovosDados[idx].faltas)) {
+        copiaNovosDados[idx].faltas = [0, 0, 0];
+      }
+      if (campo === "f1") copiaNovosDados[idx].faltas[0] = checagem.valor;
+      if (campo === "f2") copiaNovosDados[idx].faltas[1] = checagem.valor;
+      if (campo === "f3") copiaNovosDados[idx].faltas[2] = checagem.valor;
+    }
+  });
+
+  if (temErro) {
+    msgEdicao.className = "mensagem-status erro";
+    msgEdicao.textContent = "Por favor, corrija os campos destacados antes de salvar.";
+    return;
+  }
+
+  msgEdicao.className = "mensagem-status";
+  msgEdicao.textContent = "Salvando...";
+
+  try {
+    const resposta = await fetch(`${CONFIG_ALUNO.apiUrl}/api/v1/boletins/salvar`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        turma: CONFIG_ALUNO.turma,
+        numero_chamada: CONFIG_ALUNO.numeroChamada,
+        pin: pinSessao,
+        dados: {
+          disciplinas: copiaNovosDados
+        }
+      })
+    });
+
+    if (!resposta.ok) {
+      msgEdicao.className = "mensagem-status erro";
+      msgEdicao.textContent = "Falha ao salvar as alterações. Tente novamente.";
+      return;
+    }
+
+    dadosAtuaisBoletim = copiaNovosDados;
+    carregarBoletim(dadosAtuaisBoletim);
+
+    msgEdicao.className = "mensagem-status sucesso";
+    msgEdicao.textContent = "Dados salvos com sucesso.";
+
+    setTimeout(() => {
+      fecharModalEdicao();
+    }, 1200);
+
+  } catch (erro) {
+    msgEdicao.className = "mensagem-status erro";
+    msgEdicao.textContent = "Erro de rede ao tentar salvar. Mantenha os campos e tente novamente.";
+  }
+}
+
+// INICIALIZAÇÃO E EVENTOS
+document.getElementById("btn-entrar").addEventListener("click", efetuarLogin);
+
+document.getElementById("campo-pin").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    efetuarLogin();
+  }
+});
+
+document.getElementById("btn-alterar-dados").addEventListener("click", abrirModalEdicao);
+document.getElementById("btn-cancelar-edicao").addEventListener("click", fecharModalEdicao);
+document.getElementById("btn-salvar-dados").addEventListener("click", salvarAlteracoes);
+
+criarEstrelasFundo();
