@@ -17,20 +17,27 @@ const dadosMaterias = [
   { disciplina: "Práticas Experimentais", tri1: 64, tri2: "6,6", tri3: 7.0, faltas: [1, 1, 1] }
 ];
 
-// Função para criar estrelinhas e pontinhos de brilho aleatórios no fundo
+// Função para gerar BEM MAIS brilhos no fundo em rosa claro e branco
 function criarEstrelasFundo() {
   const container = document.createElement("div");
   container.id = "stars-container";
   document.body.appendChild(container);
 
-  const quantidadeEstrelas = 35; // Quantidade de brilhos na tela
+  const quantidadeEstrelas = 80; // Muito mais pontinhos piscando!
 
   for (let i = 0; i < quantidadeEstrelas; i++) {
     const star = document.createElement("div");
     star.classList.add("star");
 
-    // Sorteia se será um pontinho circular ou um brilho em formato de cruzinha
-    if (Math.random() > 0.6) {
+    // Define aleatoriamente a cor: rosa claro ou branca
+    if (Math.random() > 0.5) {
+      star.classList.add("cor-rosa");
+    } else {
+      star.classList.add("cor-branca");
+    }
+
+    // Define aleatoriamente o formato (ponto simples ou cruzinha brilho)
+    if (Math.random() > 0.65) {
       star.classList.add("sparkle");
     }
 
@@ -38,12 +45,12 @@ function criarEstrelasFundo() {
     const x = Math.random() * 100;
     const y = Math.random() * 100;
 
-    // Tamanhos variados (entre 3px e 8px)
-    const tamanho = Math.random() * 5 + 3;
+    // Tamanhos variados (entre 2px e 9px)
+    const tamanho = Math.random() * 7 + 2;
 
-    // Tempos aleatórios para o piscar de cada uma ser único
-    const duracao = Math.random() * 3 + 2; // entre 2s e 5s
-    const atraso = Math.random() * 4; // atraso inicial
+    // Tempos de animação para efeito constante
+    const duracao = Math.random() * 3 + 1.5;
+    const atraso = Math.random() * 5;
 
     star.style.left = `${x}vw`;
     star.style.top = `${y}vh`;
@@ -56,7 +63,7 @@ function criarEstrelasFundo() {
   }
 }
 
-// Função para normalizar qualquer valor de nota para a escala de 0 a 10
+// Normalização de notas
 function normalizarNota(valor) {
   if (valor === null || valor === undefined || valor === "") {
     return null;
@@ -83,7 +90,6 @@ function normalizarNota(valor) {
   return null;
 }
 
-// Função para formatar como a nota vai aparecer na tela
 function formatarNotaExibicao(nota) {
   if (nota === null) {
     return "—";
@@ -91,7 +97,6 @@ function formatarNotaExibicao(nota) {
   return nota.toFixed(1).replace(".", ",");
 }
 
-// Função principal que processa os dados e desenha a página
 function carregarBoletim() {
   const tabela = document.getElementById("tabela-boletim");
   tabela.innerHTML = "";
@@ -157,6 +162,6 @@ function carregarBoletim() {
   document.getElementById("card-atencao").innerText = qtdAtencao;
 }
 
-// Inicializa o fundo brilhante e o boletim
+// Inicializa tudo
 criarEstrelasFundo();
 carregarBoletim();
