@@ -194,4 +194,46 @@ body {
   border: 1.5px solid var(--cinza-borda);
   box-shadow: 
     0 0 15px var(--brilho-led-rosa),
-    0 0 25px var(--bril
+    0 0 25px var(--brilho-led-branco);
+  overflow-x: auto;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  min-width: 650px;
+}
+
+th, td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: 0.95rem;
+}
+
+th {
+  background-color: var(--rosa-claro);
+  color: var(--cinza-texto);
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: #fdf5f6;
+}
+
+/* Situação */
+.situacao-bom {
+  color: #4a8a5b;
+  font-weight: 600;
+}
+
+.situacao-atencao {
+  color: #c96a6a;
+  font-weight: 600;
+}
+
+.situacao-indisponivel {
+  color: var(--cinza-suave);
+  font-style: italic;
+}
