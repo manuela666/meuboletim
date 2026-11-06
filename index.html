@@ -14,91 +14,57 @@
     <!-- Cabeçalho do Boletim -->
     <header class="header">
       <h1>Boletim Digital</h1>
-      <p class="subtitle">9º Ano &bull; Turma 9B &bull; Chamada 20</p>
+      <p class="subtitle">9º Ano &bull; Estudante Exemplo</p>
     </header>
 
-    <!-- Tela de Acesso (PIN) -->
-    <section id="login-section" class="card-login">
-      <h2>Acesso ao Boletim</h2>
-      <div class="form-group">
-        <label for="pin-input">Digite seu PIN:</label>
-        <input type="password" id="pin-input" placeholder="Digite seu PIN" maxlength="10">
-        <button id="btn-entrar" class="btn-primario">Entrar</button>
+    <!-- Área de Cards de Resumo -->
+    <section class="cards-grid">
+      <div class="card">
+        <h3>Média Geral</h3>
+        <p class="card-value" id="card-media-geral">—</p>
       </div>
-      <p id="mensagem-login" class="mensagem"></p>
+
+      <div class="card">
+        <h3>Total de Faltas</h3>
+        <p class="card-value" id="card-total-faltas">—</p>
+      </div>
+
+      <div class="card">
+        <h3>Bom Desempenho</h3>
+        <p class="card-value" id="card-bom-desempenho">—</p>
+      </div>
+
+      <div class="card">
+        <h3>Precisam de Atenção</h3>
+        <p class="card-value" id="card-atencao">—</p>
+      </div>
+
+      <div class="card">
+        <h3>Frequência Geral</h3>
+        <p class="card-value" id="card-frequencia">92%</p>
+        <span class="card-status">Frequência adequada</span>
+      </div>
     </section>
 
-    <!-- Conteúdo Principal do Boletim (Oculto até o login) -->
-    <main id="boletim-section" style="display: none;">
-      
-      <div class="acoes-boletim">
-        <button id="btn-editar" class="btn-primario">Alterar dados</button>
-      </div>
-
-      <!-- Área de Cards de Resumo -->
-      <section class="cards-grid">
-        <div class="card">
-          <h3>Média Geral</h3>
-          <p class="card-value" id="card-media-geral">—</p>
-        </div>
-
-        <div class="card">
-          <h3>Total de Faltas</h3>
-          <p class="card-value" id="card-total-faltas">—</p>
-        </div>
-
-        <div class="card">
-          <h3>Bom Desempenho</h3>
-          <p class="card-value" id="card-bom-desempenho">—</p>
-        </div>
-
-        <div class="card">
-          <h3>Precisam de Atenção</h3>
-          <p class="card-value" id="card-atencao">—</p>
-        </div>
-
-        <div class="card">
-          <h3>Frequência Geral</h3>
-          <p class="card-value" id="card-frequencia">92%</p>
-          <span class="card-status">Frequência adequada</span>
-        </div>
-      </section>
-
-      <!-- Tabela Responsiva de Disciplinas -->
-      <section class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Disciplina</th>
-              <th>1º Tri</th>
-              <th>2º Tri</th>
-              <th>3º Tri</th>
-              <th>Média</th>
-              <th>Faltas</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-          <tbody id="tabela-boletim">
-            <!-- As linhas com as matérias serão geradas automaticamente pelo JavaScript -->
-          </tbody>
-        </table>
-      </section>
-    </main>
-
-    <!-- Modal para Alterar Dados -->
-    <div id="modal-edicao" class="modal" style="display: none;">
-      <div class="modal-conteudo">
-        <h2>Alterar Dados do Boletim</h2>
-        <div id="form-edicao-container">
-          <!-- Campos gerados via JS -->
-        </div>
-        <div class="modal-acoes">
-          <button id="btn-salvar" class="btn-primario">Salvar alterações</button>
-          <button id="btn-cancelar" class="btn-secundario">Cancelar</button>
-        </div>
-        <p id="mensagem-edicao" class="mensagem"></p>
-      </div>
-    </div>
+    <!-- Tabela Responsiva de Disciplinas -->
+    <section class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Disciplina</th>
+            <th>1º Tri</th>
+            <th>2º Tri</th>
+            <th>3º Tri</th>
+            <th>Média</th>
+            <th>Faltas</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-boletim">
+          <!-- As linhas com as matérias serão geradas automaticamente pelo JavaScript -->
+        </tbody>
+      </table>
+    </section>
 
   </div>
 
