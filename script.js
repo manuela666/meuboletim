@@ -17,34 +17,65 @@ const dadosMaterias = [
   { disciplina: "Práticas Experimentais", tri1: 64, tri2: "6,6", tri3: 7.0, faltas: [1, 1, 1] }
 ];
 
-// NOTA: A frequência geral de 92% é apenas um dado fictício/demonstrativo nesta etapa.
-// Ela será calculada de forma dinâmica em versões futuras do projeto.
+// Função para criar estrelinhas e pontinhos de brilho aleatórios no fundo
+function criarEstrelasFundo() {
+  const container = document.createElement("div");
+  container.id = "stars-container";
+  document.body.appendChild(container);
+
+  const quantidadeEstrelas = 35; // Quantidade de brilhos na tela
+
+  for (let i = 0; i < quantidadeEstrelas; i++) {
+    const star = document.createElement("div");
+    star.classList.add("star");
+
+    // Sorteia se será um pontinho circular ou um brilho em formato de cruzinha
+    if (Math.random() > 0.6) {
+      star.classList.add("sparkle");
+    }
+
+    // Posições aleatórias na tela
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+
+    // Tamanhos variados (entre 3px e 8px)
+    const tamanho = Math.random() * 5 + 3;
+
+    // Tempos aleatórios para o piscar de cada uma ser único
+    const duracao = Math.random() * 3 + 2; // entre 2s e 5s
+    const atraso = Math.random() * 4; // atraso inicial
+
+    star.style.left = `${x}vw`;
+    star.style.top = `${y}vh`;
+    star.style.width = `${tamanho}px`;
+    star.style.height = `${tamanho}px`;
+    star.style.setProperty("--duration", `${duracao}s`);
+    star.style.setProperty("--delay", `${atraso}s`);
+
+    container.appendChild(star);
+  }
+}
 
 // Função para normalizar qualquer valor de nota para a escala de 0 a 10
 function normalizarNota(valor) {
-  // Trata notas não lançadas ou vazias
   if (valor === null || valor === undefined || valor === "") {
     return null;
   }
 
-  // Converte texto com vírgula para número com ponto
   if (typeof valor === "string") {
     valor = valor.replace(",", ".");
   }
 
   let num = Number(valor);
 
-  // Se o valor não for um número válido, descarta
   if (isNaN(num)) {
     return null;
   }
 
-  // Ajusta valores acima de 10 (ex: 82 vira 8.2)
   if (num > 10 && num <= 100) {
     num = num / 10;
   }
 
-  // Garante que o número está dentro da faixa de 0 a 10
   if (num >= 0 && num <= 10) {
     return num;
   }
@@ -71,14 +102,11 @@ function carregarBoletim() {
   let qtdBomDesempenho = 0;
   let qtdAtencao = 0;
 
-  // Passa por cada matéria do nosso array
   dadosMaterias.forEach((materia) => {
-    // Normaliza as notas dos 3 trimestres
     const n1 = normalizarNota(materia.tri1);
     const n2 = normalizarNota(materia.tri2);
     const n3 = normalizarNota(materia.tri3);
 
-    // Calcula a média ignorando notas ausentes (sem transformar ausente em 0)
     const notasDisponiveis = [n1, n2, n3].filter((n) => n !== null);
     let media = null;
 
@@ -89,11 +117,9 @@ function carregarBoletim() {
       totalMateriasComMedia++;
     }
 
-    // Soma as faltas dos trimestres
     const totalFaltasMateria = materia.faltas.reduce((acc, curr) => acc + curr, 0);
     totalFaltasGeral += totalFaltasMateria;
 
-    // Define a situação da matéria
     let situacaoTexto = "Nota ainda não disponível";
     let situacaoClasse = "situacao-indisponivel";
 
@@ -109,7 +135,6 @@ function carregarBoletim() {
       }
     }
 
-    // Cria a linha da tabela dinamicamente usando o DOM
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><strong>${materia.disciplina}</strong></td>
@@ -124,7 +149,6 @@ function carregarBoletim() {
     tabela.appendChild(tr);
   });
 
-  // Atualiza os cards de resumo na área superior
   const mediaGeralFinal = totalMateriasComMedia > 0 ? (somaMediasGerais / totalMateriasComMedia) : null;
   
   document.getElementById("card-media-geral").innerText = formatarNotaExibicao(mediaGeralFinal);
@@ -133,5 +157,6 @@ function carregarBoletim() {
   document.getElementById("card-atencao").innerText = qtdAtencao;
 }
 
-// Executa o carregamento assim que a página abre
+// Inicializa o fundo brilhante e o boletim
+criarEstrelasFundo();
 carregarBoletim();
