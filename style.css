@@ -49,7 +49,6 @@ body {
   animation: twinkle var(--duration, 3s) infinite ease-in-out var(--delay, 0s);
 }
 
-/* Formato das 4 pontas bem finas usando clip-path */
 .star-4-points::before {
   content: '';
   position: absolute;
@@ -70,7 +69,6 @@ body {
   box-shadow: 0 0 6px #ffffff;
 }
 
-/* Animação de piscar */
 @keyframes twinkle {
   0%, 100% {
     opacity: 0.15;
@@ -118,7 +116,6 @@ body {
   margin-bottom: 30px;
 }
 
-/* Cards com Efeito LED em Volta */
 .card {
   background-color: var(--rosa-card);
   border: 1.5px solid var(--cinza-borda);
@@ -256,3 +253,129 @@ tbody tr:hover {
   border: 1.5px solid var(--cinza-borda);
   border-radius: 8px;
   font-size: 1rem;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-form input:focus, .modal-table input:focus {
+  border-color: var(--destaque-rosa);
+  box-shadow: 0 0 8px var(--brilho-led-rosa);
+}
+
+/* Botões */
+button {
+  background-color: var(--destaque-rosa);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #d27e8f;
+  transform: scale(1.02);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-secundario {
+  background-color: #e0e0e0;
+  color: var(--cinza-texto);
+}
+
+.btn-secundario:hover {
+  background-color: #d0d0d0;
+}
+
+/* Barra de Ações do Boletim */
+.acoes-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+/* Mensagens de Status / Erro */
+.mensagem-status {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--destaque-rosa);
+  min-height: 20px;
+}
+
+.mensagem-status.erro {
+  color: #c96a6a;
+}
+
+.mensagem-status.sucesso {
+  color: #4a8a5b;
+}
+
+/* Modal de Edição */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: var(--rosa-card);
+  border-radius: 16px;
+  border: 1.5px solid var(--cinza-borda);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+  padding: 25px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  color: var(--destaque-rosa);
+  margin-bottom: 5px;
+}
+
+.modal-instrucoes {
+  font-size: 0.85rem;
+  color: var(--cinza-suave);
+  margin-bottom: 15px;
+}
+
+.modal-table {
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.modal-table input {
+  width: 65px;
+  padding: 6px;
+  font-size: 0.9rem;
+}
+
+.modal-table input.invalido {
+  border-color: #c96a6a;
+  background-color: #fdf0f0;
+}
+
+.modal-botoes {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}

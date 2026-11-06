@@ -101,6 +101,7 @@ function formatarNotaExibicao(nota) {
 
 function carregarBoletim(listaDisciplinas) {
   const tabela = document.getElementById("tabela-boletim");
+  if (!tabela) return;
   tabela.innerHTML = "";
 
   let somaMediasGerais = 0;
@@ -267,11 +268,6 @@ function abrirModalEdicao() {
   dadosAtuaisBoletim.forEach((materia, idx) => {
     const tr = document.createElement("tr");
 
-    const tdNome = document.createElement("td");
-    const strongNome = document.createElement("strong");
-    strongNome.textContent = materia.disciplina;
-    tdNome.appendChild(strongNome);
-
     const f = Array.isArray(materia.faltas) ? materia.faltas : [0, 0, 0];
 
     const valN1 = materia.tri1 !== null && materia.tri1 !== undefined ? materia.tri1 : "";
@@ -428,17 +424,27 @@ async function salvarAlteracoes() {
   }
 }
 
-// INICIALIZAÇÃO E EVENTOS
-document.getElementById("btn-entrar").addEventListener("click", efetuarLogin);
+// INICIALIZAÇÃO DE EVENTOS APÓS O CARREGAMENTO DO DOM
+document.addEventListener("DOMContentLoaded", () => {
+  const btnEntrar = document.getElementById("btn-entrar");
+  const campoPin = document.getElementById("campo-pin");
+  const btnAlterar = document.getElementById("btn-alterar-dados");
+  const btnCancelar = document.getElementById("btn-cancelar-edicao");
+  const btnSalvar = document.getElementById("btn-salvar-dados");
 
-document.getElementById("campo-pin").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    efetuarLogin();
+  if (btnEntrar) btnEntrar.addEventListener("click", efetuarLogin);
+
+  if (campoPin) {
+    campoPin.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        efetuarLogin();
+      }
+    });
   }
+
+  if (btnAlterar) btnAlterar.addEventListener("click", abrirModalEdicao);
+  if (btnCancelar) btnCancelar.addEventListener("click", fecharModalEdicao);
+  if (btnSalvar) btnSalvar.addEventListener("click", salvarAlteracoes);
+
+  criarEstrelasFundo();
 });
-
-document.getElementById("btn-alterar-dados").addEventListener("click", abrirModalEdicao);
-document.getElementById("btn-cancelar-edicao").addEventListener("click", fecharModalEdicao);
-document.getElementById("btn-salvar-dados").addEventListener("click", salvarAlteracoes);
-
-criarEstrelasFundo();
